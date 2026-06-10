@@ -247,7 +247,7 @@
   <div class="wrap">
     <p class="secHead">Profitability estimate</p>
     <h2 class="secTitle">Run your own numbers</h2>
-    <p class="secSub">Drag the sliders to see what your inventory budget turns into — at the ROI and margins our managed stores actually run.</p>
+    <p class="secSub">Drag the sliders to see what your inventory budget turns into — at the ROI our managed stores actually run.</p>
     <div class="calc">
       <div class="calcCard">
         <div class="field"><label>Inventory investment</label>
@@ -255,21 +255,15 @@
         </div>
         <div class="slider">
           <div class="srow"><span>Expected ROI</span><span class="sval" id="oRoiV">42%</span></div>
-          <input id="cRoi" type="range" min="45" max="170" value="78">
-          <div class="ends"><span>35% conservative</span><span>50% aggressive</span></div>
-        </div>
-        <div class="slider">
-          <div class="srow"><span>Profit margin</span><span class="sval green" id="oMarV">22%</span></div>
-          <input id="cMar" class="green" type="range" min="20" max="25" value="22">
-          <div class="ends"><span>20% lower</span><span>25% higher</span></div>
+          <input id="cRoi" type="range" min="35" max="120" value="78">
+          <div class="ends"><span>35% conservative</span><span>120% aggressive</span></div>
         </div>
       </div>
       <div class="calcCard">
         <div class="big"><div class="n" id="oNet">—</div><div class="l">Estimated net profit</div></div>
-        <div class="out"><span>Estimated revenue</span><span class="v" id="oRev">—</span></div>
         <div class="out"><span>Cash back to you</span><span class="v green" id="oBack">—</span></div>
         <div class="out"><span>Return on spend</span><span class="v" id="oRos">—</span></div>
-        <p class="fine">Based on the ROI and margins our managed stores typically run. We walk you through your real numbers on the call.</p>
+        <p class="fine">Based on the ROI our managed stores typically run. We walk you through your real numbers on the call.</p>
       </div>
     </div>
   </div>
@@ -345,15 +339,11 @@ function renderCard(){
 function calc(){
   const invest=+(document.getElementById('cInvest').value.replace(/[^0-9]/g,''))||0;
   const roi=+document.getElementById('cRoi').value||0;
-  const margin=+document.getElementById('cMar').value||0;
   const net=invest*(roi/100);
-  const revenue=margin?net/(margin/100):0;
   const ros=1+roi/100;
   const m=n=>'$'+Math.round(n).toLocaleString();
   document.getElementById('oRoiV').textContent=roi+'%';
-  document.getElementById('oMarV').textContent=margin+'%';
   document.getElementById('oNet').textContent=m(net);
-  document.getElementById('oRev').textContent=m(revenue);
   document.getElementById('oBack').textContent=m(invest+net);
   document.getElementById('oRos').textContent='$'+ros.toFixed(2)+' per $1';
 }
@@ -361,7 +351,7 @@ function calc(){
 
 /* init */
 renderPicker();renderCard();calc();
-['cInvest','cRoi','cMar'].forEach(id=>document.getElementById(id).oninput=calc);
+['cInvest','cRoi'].forEach(id=>document.getElementById(id).oninput=calc);
 document.getElementById('cInvest').onblur=function(){const n=+(this.value.replace(/[^0-9]/g,''))||0;this.value=n.toLocaleString();};
 </script>
 </body>
