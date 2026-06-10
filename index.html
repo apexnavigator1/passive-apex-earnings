@@ -175,6 +175,7 @@
   .out{display:flex;justify-content:space-between;padding:10px 0;font-size:14px;border-bottom:1px solid var(--line)}
   .out span:first-child{color:var(--mute)}
   .out .v{font-family:var(--mono);font-weight:500}
+  .out .pct{color:var(--mute);font-weight:400;font-size:12px;margin-left:6px}
   .bignum{text-align:center;padding:18px;background:var(--ink);border:1px solid var(--line);border-radius:12px;margin-bottom:16px}
   .bignum .n{font-family:var(--display);font-weight:700;font-size:34px;color:var(--live);line-height:1}
   .bignum .l{font-family:var(--mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--mute);margin-top:6px}
@@ -261,6 +262,10 @@
       </div>
       <div class="calcCard">
         <div class="big"><div class="n" id="oNet">—</div><div class="l">Estimated net profit</div></div>
+        <div class="out"><span>Estimated revenue</span><span class="v" id="oRev">—</span></div>
+        <div class="out"><span>Product cost</span><span class="v" id="oCost">—</span></div>
+        <div class="out"><span>Amazon fees</span><span class="v" id="oFees">—</span></div>
+        <div class="out"><span>Net profit</span><span class="v green" id="oProf">—</span></div>
         <div class="out"><span>Cash back to you</span><span class="v green" id="oBack">—</span></div>
         <div class="out"><span>Return on spend</span><span class="v" id="oRos">—</span></div>
         <p class="fine">Based on the ROI our managed stores typically run. We walk you through your real numbers on the call.</p>
@@ -341,9 +346,20 @@ function calc(){
   const roi=+document.getElementById('cRoi').value||0;
   const net=invest*(roi/100);
   const ros=1+roi/100;
+  const FEE_RATE=0.28; // Amazon referral + FBA, as share of revenue (matches sample products)
+  const revenue=(invest+net)/(1-FEE_RATE);
+  const fees=revenue*FEE_RATE;
+  const netPct=revenue?Math.round(net/revenue*100):0;
+  const feePct=Math.round(FEE_RATE*100);
+  const costPct=Math.max(0,100-feePct-netPct);
   const m=n=>'$'+Math.round(n).toLocaleString();
+  const row=(id,amount,pct)=>{document.getElementById(id).innerHTML=m(amount)+'<span class="pct">'+pct+'%</span>';};
   document.getElementById('oRoiV').textContent=roi+'%';
   document.getElementById('oNet').textContent=m(net);
+  row('oRev',revenue,100);
+  row('oCost',invest,costPct);
+  row('oFees',fees,feePct);
+  row('oProf',net,netPct);
   document.getElementById('oBack').textContent=m(invest+net);
   document.getElementById('oRos').textContent='$'+ros.toFixed(2)+' per $1';
 }
